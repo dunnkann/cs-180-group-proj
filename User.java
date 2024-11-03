@@ -66,13 +66,54 @@ public class User implements UserActions, ProfileManager {
         return false;
     }
 
-    @Override
     public boolean equals(Object o) {
-        //TODO
+        // Check if the object is null or not of the same type
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        // Cast to User and compare the unique fields
+        User user = (User) o;
+        return userId == user.userId && Objects.equals(username, user.username);
     }
     
     @Override
     public String toString(User u) {
         //TODO
     }
+    // Getter and Setter for username
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // Getter and Setter for password
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Getter and Setter for userId
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    // Getter and Setter for friendsOnly
+    public boolean isFriendsOnly() {
+        return friendsOnly;
+    }
+
+    public void setFriendsOnly(boolean friendsOnly) {
+        this.friendsOnly = friendsOnly;
+    }
+
 }
