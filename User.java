@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-public class User {
-    
-=======
 import java.util.*;
+public class User {
 public class User implements UserActions, ProfileManager {
     private String username;
     private String password;
@@ -69,5 +66,5 @@ public class User implements UserActions, ProfileManager {
     }
 
 
->>>>>>> 7b662f1d35a587f3a28c68840b3e3ee0af1e09ab
+
 }
