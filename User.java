@@ -1,19 +1,19 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class User implements UserActions, ProfileManager {
     private String username;
     private String password;
-    private int userId;
+    private AtomicInteger userId; // Change to AtomicInteger
     private boolean friendsOnly = false;
     private ArrayList<Conversation> conversations = new ArrayList<>();
     private ArrayList<User> friendList = new ArrayList<>();
     private ArrayList<User> blockList = new ArrayList<>();
     
-    public User(String username, String password, int userId) {
-        //TODO: take one string instead and parse it to turn into username and password
+    public User(String username, String password, AtomicInteger userId) {
         this.username = username;
         this.password = password;
-        this.userId = userId;
+        this.userId = userId; // Accept AtomicInteger
     }
 
     // Getters
@@ -26,7 +26,7 @@ public class User implements UserActions, ProfileManager {
     }
 
     public int getUserId() {
-        return userId;
+        return userId.get(); // Use get() to retrieve the int value
     }
 
     public boolean isFriendsOnly() {
@@ -54,8 +54,8 @@ public class User implements UserActions, ProfileManager {
         this.password = password;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserId(AtomicInteger userId) {
+        this.userId = userId; // Set AtomicInteger
     }
 
     public void setFriendsOnly(boolean friendsOnly) {
@@ -65,7 +65,7 @@ public class User implements UserActions, ProfileManager {
     public void addFriend(User friend) {
         for (User f : this.friendList) {
             if (friend.equals(f)) {
-                //Error Message
+                // Error Message
                 return;
             }
         }
@@ -75,7 +75,7 @@ public class User implements UserActions, ProfileManager {
     public void removeFriend(User friend) {
         for (User f : this.friendList) {
             if (friend.equals(f)) {
-                //Error Message
+                // Error Message
                 friendList.remove(friend);
                 return; // Break out of the method after removing the friend
             }
@@ -83,25 +83,25 @@ public class User implements UserActions, ProfileManager {
     }
 
     public void sendMessage(Conversation c, Message message) {
-        //TODO
+        // TODO
     }
 
     public void sendMessage(User u, Message message) {
         if (u.isFriendsOnly() && this.isFriend(u) && !this.isBlocked(u)) {
-            //TODO
+            // TODO
         }
     }
 
     public void deleteMessage(Conversation c, int messageId) {
-        //TODO
+        // TODO
     }
 
     public boolean blockUser(User u) {
-        //TODO
+        // TODO
     }
 
     public boolean unblockUser(User u) {
-        
+        // TODO
     }
 
     public boolean isUserBlocked(User u) {
@@ -118,8 +118,6 @@ public class User implements UserActions, ProfileManager {
     }
 
     public boolean equals(Object o) {
-
+        // Implement equals method
     }
-
-
 }

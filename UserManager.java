@@ -1,4 +1,3 @@
-// UserManager.java
 import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,7 +9,7 @@ public class UserManager {
         // Create the users.txt file if it does not exist
         try {
             new File(USER_DATA_FILE).createNewFile();
-            userIdCounter = new AtomicInteger(getTotalUsers());
+            userIdCounter = new AtomicInteger(getTotalUsers()); // Initialize userIdCounter with the total users
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -22,8 +21,8 @@ public class UserManager {
             return false;
         }
 
-        int newUserId = userIdCounter.incrementAndGet(); // Generate new userId
-        User newUser = new User(username, password, newUserId);
+        User newUser = new User(username, password, userIdCounter); // Pass AtomicInteger
+        userIdCounter.incrementAndGet(); // Increment userId after creating the user
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_FILE, true))) {
             writer.write(newUser.getUsername() + "," + newUser.getPassword() + "," + newUser.getUserId());
             writer.newLine();
