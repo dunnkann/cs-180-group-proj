@@ -1,5 +1,4 @@
 import java.util.*;
-public class User {
 public class User implements UserActions, ProfileManager {
     private String username;
     private String password;
