@@ -61,13 +61,85 @@ public class Database {
     public boolean removeFriendData(String username, String friendName) {
         User user = this.searchUsers(username);
         User friend = this.searchUsers(friendName);
-        if (user == null || friend == null) {
+        boolean isFriend = false;
+        for (int i = 0; i < user.getFriends().size(); i++) {
+            if (user.getFriends().get(i).equals(friend)) {
+                isFriend = true;
+                break;
+            }
+        }
+        if (user == null || friend == null || !isFriend) {
             return false;
         } else {
             user.removeFriend(friend);
             return true;
         }
         
+    }
+
+    public boolean addFriendData(String username, String friendName) {
+        User user = this.searchUsers(username);
+        User friend = this.searchUsers(friendName);
+        for (int i = 0; i < user.getFriends().size(); i++) {
+            if (user.getFriends().get(i).equals(friend)) {
+                return false;
+            }
+        }
+        if (user == null || friend == null) {
+            return false;
+        } else {
+            user.addFriend(friend);
+            return true;
+        }
+        
+    }
+
+    public boolean blockFriendData(String username, String friendName) {
+        User user = this.searchUsers(username);
+        User friend = this.searchUsers(friendName);
+        boolean isFriend = false;
+        for (int i = 0; i < user.getFriends().size(); i++) {
+            if (user.getFriends().get(i).equals(friend)) {
+                isFriend = true;
+                break;
+            }
+        }
+        if (!isFriend)
+            return false;
+        for (int i = 0; i < user.getBlockList().size(); i++) {
+            if (user.getBlockList().get(i).equals(friend)) {
+                return false;
+            }
+        }
+
+        user.blockUser(friend);
+        return true;
+
+    }
+
+    public boolean unblockFriendData(String username, String friendName) {
+        User user = this.searchUsers(username);
+        User friend = this.searchUsers(friendName);
+        boolean isFriend = false;
+        boolean isBlocked = false;
+        for (int i = 0; i < user.getFriends().size(); i++) {
+            if (user.getFriends().get(i).equals(friend)) {
+                isFriend = true;
+                break;
+            }
+        }
+        if (!isFriend)
+            return false;
+        for (int i = 0; i < user.getBlockList().size(); i++) {
+            if (user.getBlockList().get(i).equals(friend)) {
+                isBlocked = true;
+            }
+        }
+        if (!isBlocked)
+            return false;
+        user.unblockUser(friend);
+        return true;
+
     }
 }
 

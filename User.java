@@ -120,5 +120,11 @@ public class User implements UserActions {
         this.friendsOnly = friendsOnly;
     }
 
+    public List<User> getFriends() {
+        return friendList;
+    }
 
+    public List<User> getBlockList() {
+        return blockList;
+    }
 }
