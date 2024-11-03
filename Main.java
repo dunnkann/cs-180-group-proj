@@ -22,8 +22,11 @@ public class Main {
                 try {
                     if (userManager.registerUser(newUsername, newPassword)) {
                         System.out.println("Registration successful!");
+                    } else {
+                        System.out.println("Registration failed.");
                     }
                 } catch (IOException e) {
+                    System.out.println("An error occurred during registration.");
                     e.printStackTrace();
                 }
                 break;
@@ -39,11 +42,12 @@ public class Main {
                         System.out.println("Invalid credentials.");
                     }
                 } catch (IOException e) {
+                    System.out.println("An error occurred during login.");
                     e.printStackTrace();
                 }
                 break;
             default:
-                System.out.println("Invalid choice.");
+                System.out.println("Invalid choice. Please select 1 or 2.");
                 break;
         }
 

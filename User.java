@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class User implements UserActions, ProfileManager {
     private String username;
     private String password;
@@ -14,6 +15,53 @@ public class User implements UserActions, ProfileManager {
         this.password = password;
         this.userId = userId;
     }
+
+    // Getters
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public boolean isFriendsOnly() {
+        return friendsOnly;
+    }
+
+    public ArrayList<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public ArrayList<User> getFriendList() {
+        return friendList;
+    }
+
+    public ArrayList<User> getBlockList() {
+        return blockList;
+    }
+
+    // Setters
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setFriendsOnly(boolean friendsOnly) {
+        this.friendsOnly = friendsOnly;
+    }
+
     public void addFriend(User friend) {
         for (User f : this.friendList) {
             if (friend.equals(f)) {
@@ -23,31 +71,39 @@ public class User implements UserActions, ProfileManager {
         }
         friendList.add(friend);
     }
+
     public void removeFriend(User friend) {
         for (User f : this.friendList) {
             if (friend.equals(f)) {
                 //Error Message
                 friendList.remove(friend);
+                return; // Break out of the method after removing the friend
             }
         }
-        
     }
+
     public void sendMessage(Conversation c, Message message) {
         //TODO
     }
+
     public void sendMessage(User u, Message message) {
-        if (u.friendsOnly && (this.isFriend(u)) && (this.isBlocked(u) !=)) {
+        if (u.isFriendsOnly() && this.isFriend(u) && !this.isBlocked(u)) {
             //TODO
         }
     }
+
     public void deleteMessage(Conversation c, int messageId) {
         //TODO
     }
+
     public boolean blockUser(User u) {
         //TODO
+        return false; // Placeholder return
     }
+
     public boolean unblockUser(User u) {
-        
+        //TODO
+        return false; // Placeholder return
     }
 
     public boolean isBlocked(User u) {
@@ -59,10 +115,21 @@ public class User implements UserActions, ProfileManager {
         return false;
     }
 
-    @Override
-    public boolean equals(Object o) {
-
+    public boolean isFriend(User u) {
+        return friendList.contains(u);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        // Implement equality check
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return userId == user.userId && username.equals(user.username);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, userId);
+    }
 }

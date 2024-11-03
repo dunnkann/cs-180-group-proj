@@ -1,8 +1,20 @@
 // UserManager.java
 import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserManager {
     private static final String USER_DATA_FILE = "users.txt"; // Store user data
+    private AtomicInteger userIdCounter;
+
+    public UserManager() {
+        // Create the users.txt file if it does not exist
+        try {
+            new File(USER_DATA_FILE).createNewFile();
+            userIdCounter = new AtomicInteger(getTotalUsers());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean registerUser(String username, String password) throws IOException {
         if (usernameExists(username)) {
@@ -10,9 +22,10 @@ public class UserManager {
             return false;
         }
 
-        User newUser = new User(username, password);
+        int newUserId = userIdCounter.incrementAndGet(); // Generate new userId
+        User newUser = new User(username, password, newUserId);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_FILE, true))) {
-            writer.write(newUser.getUsername() + "," + newUser.getPassword());
+            writer.write(newUser.getUsername() + "," + newUser.getPassword() + "," + newUser.getUserId());
             writer.newLine();
             return true;
         }
@@ -45,5 +58,15 @@ public class UserManager {
             }
         }
         return false; // Invalid credentials
+    }
+
+    private int getTotalUsers() throws IOException {
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_FILE))) {
+            while (reader.readLine() != null) {
+                count++;
+            }
+        }
+        return count;
     }
 }
