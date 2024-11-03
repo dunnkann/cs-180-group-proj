@@ -44,13 +44,20 @@ public class User implements UserActions, ProfileManager {
         //TODO
     }
     public boolean blockUser(User u) {
-        //TODO
+        if (this.isUserBlocked(u)) {
+            //error message
+            return false;
+        }
+        this.blockList.add(u);
     }
     public boolean unblockUser(User u) {
-        
+        if (this.isUserBlocked(u)) {
+            this.blockList.remove(u);
+        }
+        return false;
     }
 
-    public boolean isBlocked(User u) {
+    public boolean isUserBlocked(User u) {
         for (User f : this.blockList) {
             if (u.equals(f)) {
                 return true;
@@ -61,8 +68,11 @@ public class User implements UserActions, ProfileManager {
 
     @Override
     public boolean equals(Object o) {
-
+        //TODO
     }
-
-
+    
+    @Override
+    public String toString(User u) {
+        //TODO
+    }
 }
