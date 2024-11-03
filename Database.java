@@ -10,13 +10,15 @@ public class Database {
         conversationFile = conversations;
     }
     
-    public boolean readUserFile(String) {
+    public boolean readUserFile(String userFile) {
         try {
-            File f = new File()
-            BufferedReader br = new BufferedReader(FileReader(f));
+            File f = new File(userFile);
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            br.close();
+            return true;
             
         } catch (IOException e) {
-
+            return false;
         }
     }
 }
