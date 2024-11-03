@@ -1,123 +1,123 @@
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class User implements UserActions, ProfileManager {
+public class User implements UserActions {
     private String username;
     private String password;
-    private AtomicInteger userId; // Change to AtomicInteger
+    private int userId;
+    private String description;
     private boolean friendsOnly = false;
-    private ArrayList<Conversation> conversations = new ArrayList<>();
-    private ArrayList<User> friendList = new ArrayList<>();
-    private ArrayList<User> blockList = new ArrayList<>();
+    private List<Conversation> conversations = Collections.synchronizedList(new ArrayList<>());
+    private List<User> friendList = Collections.synchronizedList(new ArrayList<>());
+    private List<User> blockList = Collections.synchronizedList(new ArrayList<>());
+
     
-    public User(String username, String password, AtomicInteger userId) {
-        this.username = username;
-        this.password = password;
-        this.userId = userId; // Accept AtomicInteger
+    public User(String userData) {
+        String[] parts = userData.split(",");
+        
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Invalid format. Expected format: username,password,userId[,description]");
+        }
+        
+        this.username = parts[0].trim();
+        this.password = parts[1].trim();
+        
+        try {
+            this.userId = Integer.parseInt(parts[2].trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid userId. It must be an integer.");
+        }
+        
+        if (parts.length > 3) {
+            this.description = parts[3].trim();
+        }
     }
 
-    // Getters
+    public void addFriend(User friend) {
+        friendList.add(friend);
+    }
+
+    public void removeFriend(User friend) {
+        friendList.remove(friend);
+    }
+
+    public boolean blockUser(User u) {
+        if (isUserBlocked(u)) {
+            return false;
+        }
+        blockList.add(u);
+        return true;
+    }
+
+    public boolean unblockUser(User u) {
+        return blockList.remove(u);
+    }
+
+    public boolean isUserBlocked(User u) {
+        return blockList.contains(u);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        User user = (User) o;
+        return userId == user.userId && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s,%s,%d,%s", username, password, userId, description != null ? description : "");
+    }
+
+        // Getter and Setter for username
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public int getUserId() {
-        return userId.get(); // Use get() to retrieve the int value
-    }
-
-    public boolean isFriendsOnly() {
-        return friendsOnly;
-    }
-
-    public ArrayList<Conversation> getConversations() {
-        return conversations;
-    }
-
-    public ArrayList<User> getFriendList() {
-        return friendList;
-    }
-
-    public ArrayList<User> getBlockList() {
-        return blockList;
-    }
-
-    // Setters
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    // Getter and Setter for password
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setUserId(AtomicInteger userId) {
-        this.userId = userId; // Set AtomicInteger
+    // Getter and Setter for userId
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    // Getter and Setter for description
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    // Getter and Setter for friendsOnly
+    public boolean isFriendsOnly() {
+        return friendsOnly;
     }
 
     public void setFriendsOnly(boolean friendsOnly) {
         this.friendsOnly = friendsOnly;
     }
 
-    public void addFriend(User friend) {
-        for (User f : this.friendList) {
-            if (friend.equals(f)) {
-                // Error Message
-                return;
-            }
-        }
-        friendList.add(friend);
-    }
-
-    public void removeFriend(User friend) {
-        for (User f : this.friendList) {
-            if (friend.equals(f)) {
-                // Error Message
-                friendList.remove(friend);
-                return; // Break out of the method after removing the friend
-            }
-        }
-    }
-
-    public void sendMessage(Conversation c, Message message) {
-        // TODO
-    }
-
-    public void sendMessage(User u, Message message) {
-        if (u.isFriendsOnly() && this.isFriend(u) && !this.isBlocked(u)) {
-            // TODO
-        }
-    }
-
-    public void deleteMessage(Conversation c, int messageId) {
-        // TODO
-    }
-
-    public boolean blockUser(User u) {
-        // TODO
-    }
-
-    public boolean unblockUser(User u) {
-        // TODO
-    }
-
-    public boolean isUserBlocked(User u) {
-        for (User f : this.blockList) {
-            if (u.equals(f)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isFriend(User u) {
-        return friendList.contains(u);
-    }
-
-    public boolean equals(Object o) {
-        // Implement equals method
-    }
 }
