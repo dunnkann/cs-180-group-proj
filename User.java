@@ -98,15 +98,13 @@ public class User implements UserActions, ProfileManager {
 
     public boolean blockUser(User u) {
         //TODO
-        return false; // Placeholder return
     }
 
     public boolean unblockUser(User u) {
-        //TODO
-        return false; // Placeholder return
+        
     }
 
-    public boolean isBlocked(User u) {
+    public boolean isUserBlocked(User u) {
         for (User f : this.blockList) {
             if (u.equals(f)) {
                 return true;
@@ -119,17 +117,9 @@ public class User implements UserActions, ProfileManager {
         return friendList.contains(u);
     }
 
-    @Override
     public boolean equals(Object o) {
-        // Implement equality check
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return userId == user.userId && username.equals(user.username);
+
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, userId);
-    }
+
 }
