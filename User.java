@@ -100,6 +100,9 @@ public class User implements UserActions {
     public String toString() {
         return String.format("%s,%s,%d,%s", username, password, userId, description != null ? description : "");
     }
+<<<<<<< HEAD
+
+=======
     
         // Getter and Setter for username
     public String getUsername() {
@@ -137,4 +140,5 @@ public class User implements UserActions {
         this.description = description;
     }
 
+>>>>>>> 60de455262ab02334289959cf60922176b467e3f
 }
