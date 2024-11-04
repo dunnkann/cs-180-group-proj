@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class User implements UserActions {
     private String username;
@@ -103,6 +104,14 @@ public class User implements UserActions {
         this.username = username;
         this.password = password;
         this.userId = userId;
+        this.friendList = Collections.synchronizedList(new ArrayList<>());
+        this.blockList = Collections.synchronizedList(new ArrayList<>());
+        this.conversations = Collections.synchronizedList(new ArrayList<>());
+    }
+    public User(String username, String password, AtomicInteger userId) {
+        this.username = username;
+        this.password = password;
+        this.userId = userId.get();
         this.friendList = Collections.synchronizedList(new ArrayList<>());
         this.blockList = Collections.synchronizedList(new ArrayList<>());
         this.conversations = Collections.synchronizedList(new ArrayList<>());
