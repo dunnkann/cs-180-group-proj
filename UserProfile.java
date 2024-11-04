@@ -12,9 +12,9 @@ public class UserProfile {
         return ans;
     }
 
-    public static void main (String[] args) {
-        User user = new User("Me,password,1,I like chocolate and video games :)");
-        UserProfile profile = new UserProfile(user);
-        System.out.print(profile);
-    }
+    // public static void main (String[] args) {
+    //     User user = new User("Me,password,1,I like chocolate and video games :)");
+    //     UserProfile profile = new UserProfile(user);
+    //     System.out.print(profile);
+    // }
 }

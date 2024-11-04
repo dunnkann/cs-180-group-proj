@@ -3,7 +3,7 @@ import java.io.*;
 public class Database {
     private ArrayList<User> users;
     private ArrayList<Conversation> conversations;
-    private ArrayList<UserProfile> profiles;
+    //private ArrayList<UserProfile> profiles;
     private String userFile;
     private String conversationFile;
     //private String profileFile;
@@ -32,25 +32,26 @@ public class Database {
         }
     }
 
-    // public boolean readConversationFile() {
-    //     try {
-    //         File f = new File(conversationFile);
-    //         BufferedReader br = new BufferedReader(new FileReader(f));
-    //         while(true) {
-    //            String line = br.readLine();
-    //            if (line == null)
-    //                 break;
-    //             Conversation conversation = new conversation(line);
-    //             conversations.add(conversation);
-    //         }
-    //         br.close();
-    //         return true;
+    public boolean readConversationFile() {
+        try {
+            File f = new File(conversationFile);
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            while(true) {
+               String line = br.readLine();
+               if (line == null)
+                    break;
+                Conversation conversation = new Conversation(line);
+                conversations.add(conversation);
+            }
+            br.close();
+            return true;
             
-    //     } catch (IOException e) {
-    //         return false;
-    //     }
-    // }
+        } catch (IOException e) {
+            return false;
+        }
+    }
 
+    // looks through all users and returns user with username(more for when user is searching for someone)
     public User searchUsers(String username) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getUsername() == username) {
@@ -59,47 +60,68 @@ public class Database {
         }
         return null;
     }
+    // looks through all users and returns user with specified userId (mostly use to identify friends)
+    public User searchUsers(int userId) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUserId() == userId) {
+                return users.get(i);
+            }
+        }
+        return null;
+    }
 
-    public boolean removeFriendData(String username, String friendName) {
+    public boolean removeFriendData(String username, int friendId) {
         User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendName);
+        User friend = this.searchUsers(friendId);
         boolean isFriend = false;
+
+        if (user == null || friend == null) {
+            return false;
+        }
+
         for (int i = 0; i < user.getFriends().size(); i++) {
             if (user.getFriends().get(i).equals(friend)) {
                 isFriend = true;
                 break;
             }
         }
-        if (user == null || friend == null || !isFriend) {
+
+        if (!isFriend)
             return false;
-        } else {
-            user.removeFriend(friend);
-            return true;
-        }
+        
+        user.removeFriend(friend);
+        return true;
+        
         
     }
 
-    public boolean addFriendData(String username, String friendName) {
+    public boolean addFriendData(String username, int friendId) {
         User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendName);
+        User friend = this.searchUsers(friendId);
+
+        if (user == null || friend == null) {
+            return false;
+        }
+
         for (int i = 0; i < user.getFriends().size(); i++) {
             if (user.getFriends().get(i).equals(friend)) {
                 return false;
             }
         }
-        if (user == null || friend == null) {
-            return false;
-        } else {
-            user.addFriend(friend);
-            return true;
-        }
+        
+        user.addFriend(friend);
+        return true;
         
     }
 
-    public boolean blockFriendData(String username, String friendName) {
+    public boolean blockFriendData(String username, int friendId) {
         User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendName);
+        User friend = this.searchUsers(friendId);
         boolean isFriend = false;
+
+        if (user == null || friend == null)
+            return false;
+
         for (int i = 0; i < user.getFriends().size(); i++) {
             if (user.getFriends().get(i).equals(friend)) {
                 isFriend = true;
@@ -122,6 +144,10 @@ public class Database {
     public boolean unblockFriendData(String username, String friendName) {
         User user = this.searchUsers(username);
         User friend = this.searchUsers(friendName);
+
+        if (user == null || friend == null)
+            return false;
+
         boolean isFriend = false;
         boolean isBlocked = false;
         for (int i = 0; i < user.getFriends().size(); i++) {
@@ -145,18 +171,69 @@ public class Database {
     }
 
     // public boolean readProfileFile() throws IOException {
-    //    try {
-    //        File f = new File("profileFile");
-    //        BufferedReader br = new BufferedReader(new FileReader(f));
-    //        while (true) {
-    //            String line = br.readLine();
-    //            if (line == null)
-    //                break;
-               
-    //        }
-    //    } catch (IOException e) {
-    //        throw e;
-    //    }
+    //     try {
+    //         File f = new File(profileFile);
+    //         BufferedReader br = new BufferedReader(new FileReader(f));
+    //         while (true) {
+    //             String line = br.readLine();
+    //             if (line == null)
+    //                 break;
+                
+    //         }
+    //         br.close();
+    //         return true;
+    //     } catch (IOException e) {
+    //         return false;
+    //     }
+    //  }
+
+    public boolean writeOutput() {
+        try {
+            //Writer for user
+            File u = new File(userFile);
+            BufferedWriter bwU = new BufferedWriter(new FileWriter(u));
+        
+            // go through entire user arraylist and print each user to a new line
+            for (int i = 0; i < users.size(); i++) {
+                if (i == users.size() - 1)
+                    bwU.write(users.get(i).toString());
+                else {
+                    bwU.write(users.get(i).toString());
+                    bwU.newLine();
+                }
+
+            }
+
+            bwU.close();
+            
+
+            //Writer for conversation
+            File c = new File(conversationFile);
+            BufferedWriter bwC = new BufferedWriter(new FileWriter(c));
+
+            // go through entire user arraylist and print each user to a new line
+            for (int j = 0; j < conversations.size(); j++) {
+                if (j == conversations.size() - 1)
+                    bwC.write(conversations.get(j).toString());
+                else {
+                    bwC.write(conversations.get(j).toString());
+                    bwC.newLine();
+                }
+
+            }
+            bwC.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+        
+    }
+    
+
+    // public static void main(String[] args) {
+
     // }
 }
 
