@@ -245,12 +245,31 @@ public class User implements UserActions {
     public void setFriendsOnly(boolean friendsOnly) {
         this.friendsOnly = friendsOnly;
     }
-
-    public List<User> getFriends() {
+    // Getter and Setter for friendList
+    public List<User> getFriendList() {
         return friendList;
     }
 
+    public void setFriendList(List<User> friendList) {
+        this.friendList = Collections.synchronizedList(new ArrayList<>(friendList));
+    }
+
+    // Getter and Setter for blockList
     public List<User> getBlockList() {
         return blockList;
     }
+
+    public void setBlockList(List<User> blockList) {
+        this.blockList = Collections.synchronizedList(new ArrayList<>(blockList));
+    }
+
+    // Getter and Setter for conversations
+    public List<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = Collections.synchronizedList(new ArrayList<>(conversations));
+    }
+
 }
