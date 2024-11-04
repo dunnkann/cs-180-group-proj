@@ -1,3 +1,3 @@
-public class Friend extends User {
-    
-}
+// public class Friend extends User {
+//    
+// }
