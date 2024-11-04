@@ -20,7 +20,7 @@ public class User implements UserActions {
         if (mainAttributes.length < 5) {
             throw new IllegalArgumentException("Expected format: Username: <username>, Password: <password>, UserID: <userId>, Description: <description>, FriendsOnly: <friendsOnly>");
         }
-
+    
         this.username = mainAttributes[0].split(": ")[1].trim();
         this.password = mainAttributes[1].split(": ")[1].trim();
         try {
@@ -30,33 +30,43 @@ public class User implements UserActions {
         }
         this.description = mainAttributes[3].split(": ")[1].trim();
         this.friendsOnly = Boolean.parseBoolean(mainAttributes[4].split(": ")[1].trim());
-
-        // Parse friendList from "Friends: [friend1, friend2, ...]"
+    
+        // Parse friendList from "Friends: [id1, id2, ...]"
         this.friendList = new ArrayList<>();
         if (sections.length > 1 && sections[1].startsWith("Friends: [")) {
             String friendsSection = sections[1].substring(10, sections[1].length() - 1).trim(); // Remove "Friends: [" and ending "]"
             if (!friendsSection.isEmpty()) {
-                String[] friends = friendsSection.split(",");
-                for (String friendName : friends) {
-                    User friend = new User(friendName, "password", 0, ""); // Dummy User objects
-                    this.friendList.add(friend);
+                String[] friendIds = friendsSection.split(",");
+                for (String friendId : friendIds) {
+                    try {
+                        int id = Integer.parseInt(friendId.trim());
+                        User friend = new User("Friend", "password", id, ""); // Create a User with the id; other fields are placeholders
+                        this.friendList.add(friend);
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid friendId. Each friendId must be an integer.");
+                    }
                 }
             }
         }
-
-        // Parse blockList from "Blocked Users: [blocked1, blocked2, ...]"
+    
+        // Parse blockList from "Blocked Users: [id1, id2, ...]"
         this.blockList = new ArrayList<>();
         if (sections.length > 2 && sections[2].startsWith("Blocked Users: [")) {
             String blockedSection = sections[2].substring(15, sections[2].length() - 1).trim(); // Remove "Blocked Users: [" and ending "]"
             if (!blockedSection.isEmpty()) {
-                String[] blockedUsers = blockedSection.split(",");
-                for (String blockedName : blockedUsers) {
-                    User blocked = new User(blockedName, "password", 0, ""); // Dummy User objects
-                    this.blockList.add(blocked);
+                String[] blockedIds = blockedSection.split(",");
+                for (String blockedId : blockedIds) {
+                    try {
+                        int id = Integer.parseInt(blockedId.trim());
+                        User blockedUser = new User("BlockedUser", "password", id, ""); // Create User with id only
+                        this.blockList.add(blockedUser);
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid blockedId. Each blockedId must be an integer.");
+                    }
                 }
             }
         }
-
+    
         // Parse conversations from "Conversations: [conversation1, conversation2, ...]"
         this.conversations = new ArrayList<>();
         if (sections.length > 3 && sections[3].startsWith("Conversations: [")) {
@@ -64,14 +74,40 @@ public class User implements UserActions {
             if (!conversationsSection.isEmpty()) {
                 String[] convs = conversationsSection.split(",");
                 for (String conv : convs) {
-                    Conversation conversation = new Conversation(conv); // Assuming Conversation has a constructor that takes a summary string
+                    Conversation conversation = new Conversation(conv.trim()); // Assuming Conversation has a constructor that takes a summary string
                     this.conversations.add(conversation);
                 }
             }
         }
     }
-
-
+    public User(int userId) {
+        this.userId = userId;
+        this.username = "UserNumber:";
+        this.password = "";
+        this.description = "";
+        this.friendList = Collections.synchronizedList(new ArrayList<>());
+        this.blockList = Collections.synchronizedList(new ArrayList<>());
+        this.conversations = Collections.synchronizedList(new ArrayList<>());
+    }
+    public User(String username, String password, int userId, String description) {
+        this.username = username;
+        this.password = password;
+        this.userId = userId;
+        this.description = description;
+        this.friendList = Collections.synchronizedList(new ArrayList<>());
+        this.blockList = Collections.synchronizedList(new ArrayList<>());
+        this.conversations = Collections.synchronizedList(new ArrayList<>());
+    }
+    
+    public User(String username, String password, int userId) {
+        this.username = username;
+        this.password = password;
+        this.userId = userId;
+        this.friendList = Collections.synchronizedList(new ArrayList<>());
+        this.blockList = Collections.synchronizedList(new ArrayList<>());
+        this.conversations = Collections.synchronizedList(new ArrayList<>());
+    }
+    
     public User(String username, String password, int userId, String description, 
                 List<User> friendList, List<User> blockList, List<Conversation> conversations) {
         this.username = username;
@@ -121,38 +157,39 @@ public class User implements UserActions {
         return Objects.hash(userId, username);
     }
 
-    @Override 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("Username: %s, Password: %s, UserID: %d, Description: %s, FriendsOnly: %s",
                                 username, password, userId, description != null ? description : "", friendsOnly));
         
-        // Format friendList
+        // Format friendList with user IDs
         sb.append("; Friends: [");
         for (User friend : friendList) {
-            sb.append(friend.getUsername()).append(",");
+            sb.append(friend.getUserId()).append(",");
         }
         if (!friendList.isEmpty()) sb.setLength(sb.length() - 1); // Remove trailing comma
         sb.append("]");
-
-        // Format blockList
+    
+        // Format blockList with user IDs
         sb.append("; Blocked Users: [");
         for (User blocked : blockList) {
-            sb.append(blocked.getUsername()).append(",");
+            sb.append(blocked.getUserId()).append(",");
         }
         if (!blockList.isEmpty()) sb.setLength(sb.length() - 1); // Remove trailing comma
         sb.append("]");
-
-        // Format conversations
+    
+        // Format conversations (assuming each conversation has a `toString` method)
         sb.append("; Conversations: [");
         for (Conversation conv : conversations) {
             sb.append(conv.toString()).append(",");
         }
         if (!conversations.isEmpty()) sb.setLength(sb.length() - 1); // Remove trailing comma
         sb.append("]");
-
+    
         return sb.toString();
     }
+    
 
 
         // Getter and Setter for username
