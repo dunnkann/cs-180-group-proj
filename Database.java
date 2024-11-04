@@ -3,8 +3,10 @@ import java.io.*;
 public class Database {
     private ArrayList<User> users;
     private ArrayList<Conversation> conversations;
+    private ArrayList<UserProfile> profiles;
     private String userFile;
     private String conversationFile;
+    private String profileFile;
 
     public Database(String users, String conversations) {
         userFile = users;
@@ -140,6 +142,17 @@ public class Database {
         user.unblockUser(friend);
         return true;
 
+    }
+
+    public boolean readProfileFile() {
+        File f = new File("profileFile");
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        while (true) {
+            String line = br.readLine();
+            if (line == null)
+                break;
+            
+        }
     }
 }
 
