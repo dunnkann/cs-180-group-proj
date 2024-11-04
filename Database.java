@@ -6,7 +6,7 @@ public class Database {
     private ArrayList<UserProfile> profiles;
     private String userFile;
     private String conversationFile;
-    private String profileFile;
+    //private String profileFile;
 
     public Database(String users, String conversations) {
         userFile = users;
@@ -32,24 +32,24 @@ public class Database {
         }
     }
 
-    public boolean readConversationFile() {
-        try {
-            File f = new File(conversationFile);
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            while(true) {
-               String line = br.readLine();
-               if (line == null)
-                    break;
-                Conversation conversation = new conversation(line);
-                conversations.add(conversation);
-            }
-            br.close();
-            return true;
+    // public boolean readConversationFile() {
+    //     try {
+    //         File f = new File(conversationFile);
+    //         BufferedReader br = new BufferedReader(new FileReader(f));
+    //         while(true) {
+    //            String line = br.readLine();
+    //            if (line == null)
+    //                 break;
+    //             Conversation conversation = new conversation(line);
+    //             conversations.add(conversation);
+    //         }
+    //         br.close();
+    //         return true;
             
-        } catch (IOException e) {
-            return false;
-        }
-    }
+    //     } catch (IOException e) {
+    //         return false;
+    //     }
+    // }
 
     public User searchUsers(String username) {
         for (int i = 0; i < users.size(); i++) {
@@ -144,15 +144,19 @@ public class Database {
 
     }
 
-    public boolean readProfileFile() {
-        File f = new File("profileFile");
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        while (true) {
-            String line = br.readLine();
-            if (line == null)
-                break;
-            
-        }
-    }
+    // public boolean readProfileFile() throws IOException {
+    //    try {
+    //        File f = new File("profileFile");
+    //        BufferedReader br = new BufferedReader(new FileReader(f));
+    //        while (true) {
+    //            String line = br.readLine();
+    //            if (line == null)
+    //                break;
+               
+    //        }
+    //    } catch (IOException e) {
+    //        throw e;
+    //    }
+    // }
 }
 
