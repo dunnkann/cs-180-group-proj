@@ -1,8 +1,8 @@
 import java.util.*;
 import java.io.*;
 public class Database {
-    private ArrayList<User> users;
-    private ArrayList<Conversation> conversations;
+    private List<User> users = Collections.synchronizedList(new ArrayList<>());
+    private List<Conversation> conversations = Collections.synchronizedList(new ArrayList<>());
     //private ArrayList<UserProfile> profiles;
     private String userFile;
     private String conversationFile;
@@ -30,6 +30,50 @@ public class Database {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public boolean assignFriends() {
+        boolean fail = false;
+        for (int i = 0; i < users.size(); i++) {
+            
+            User current = users.get(i);
+            List<User> friends = current.getFriends();
+            //look through the current user's friend list, find each friend, initialize them properly, or increase notFound
+            for (int j = 0; j < current.getFriends().size(); j++) {
+                int friendId = friends.get(i).getUserId();
+                User friend = this.searchUsers(friendId);
+                if (friend == null)
+                    fail = true;
+                else
+                    friends.set(i, friend);
+            }
+        }
+        if (fail)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean assignBlocked() {
+        boolean fail = false;
+        for (int i = 0; i < users.size(); i++) {
+            
+            User current = users.get(i);
+            List<User> blockedList = current.getBlockList();
+            //look through the current user's friend list, find each friend, initialize them properly, or increase notFound
+            for (int j = 0; j < blockedList.size(); j++) {
+                int blockedId = blockedList.get(i).getUserId();
+                User blocked = this.searchUsers(blockedId);
+                if (blocked == null)
+                    fail = true;
+                else
+                    blockedList.set(i, blocked);
+            }
+        }
+        if (fail)
+            return false;
+        else
+            return true;
     }
 
     public boolean readConversationFile() {
@@ -211,7 +255,7 @@ public class Database {
             File c = new File(conversationFile);
             BufferedWriter bwC = new BufferedWriter(new FileWriter(c));
 
-            // go through entire user arraylist and print each user to a new line
+            // go through entire conversation arraylist and print each conversation to a new line
             for (int j = 0; j < conversations.size(); j++) {
                 if (j == conversations.size() - 1)
                     bwC.write(conversations.get(j).toString());
