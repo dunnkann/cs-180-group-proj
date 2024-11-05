@@ -1,239 +1,131 @@
 import java.util.*;
 import java.io.*;
+
 public class Database {
     private ArrayList<User> users;
     private ArrayList<Conversation> conversations;
-    //private ArrayList<UserProfile> profiles;
     private String userFile;
     private String conversationFile;
-    //private String profileFile;
 
     public Database(String users, String conversations) {
-        userFile = users;
-        conversationFile = conversations;
+        this.userFile = users;
+        this.conversationFile = conversations;
+        this.users = new ArrayList<>();
+        this.conversations = new ArrayList<>();
     }
-    
+
     public boolean readUserFile() {
-        try {
-            File f = new File(userFile);
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            while(true) {
-               String line = br.readLine();
-               if (line == null)
-                    break;
+        try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
                 User user = new User(line);
                 users.add(user);
             }
-            br.close();
-            return true;
-            
+            return !users.isEmpty();
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     public boolean readConversationFile() {
-        try {
-            File f = new File(conversationFile);
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            while(true) {
-               String line = br.readLine();
-               if (line == null)
-                    break;
+        try (BufferedReader br = new BufferedReader(new FileReader(conversationFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
                 Conversation conversation = new Conversation(line);
                 conversations.add(conversation);
             }
-            br.close();
-            return true;
-            
+            return !conversations.isEmpty();
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-    // looks through all users and returns user with username(more for when user is searching for someone)
     public User searchUsers(String username) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUsername() == username) {
-                return users.get(i);
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
             }
         }
         return null;
     }
-    // looks through all users and returns user with specified userId (mostly use to identify friends)
+
     public User searchUsers(int userId) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUserId() == userId) {
-                return users.get(i);
+        for (User user : users) {
+            if (user.getUserId() == userId) {
+                return user;
             }
         }
         return null;
     }
 
     public boolean removeFriendData(String username, int friendId) {
-        User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendId);
-        boolean isFriend = false;
+        User user = searchUsers(username);
+        User friend = searchUsers(friendId);
 
-        if (user == null || friend == null) {
+        if (user == null || friend == null || !user.getFriends().contains(friend)) {
             return false;
         }
 
-        for (int i = 0; i < user.getFriends().size(); i++) {
-            if (user.getFriends().get(i).equals(friend)) {
-                isFriend = true;
-                break;
-            }
-        }
-
-        if (!isFriend)
-            return false;
-        
         user.removeFriend(friend);
         return true;
-        
-        
     }
 
     public boolean addFriendData(String username, int friendId) {
-        User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendId);
+        User user = searchUsers(username);
+        User friend = searchUsers(friendId);
 
-        if (user == null || friend == null) {
+        if (user == null || friend == null || user.getFriends().contains(friend)) {
             return false;
         }
 
-        for (int i = 0; i < user.getFriends().size(); i++) {
-            if (user.getFriends().get(i).equals(friend)) {
-                return false;
-            }
-        }
-        
         user.addFriend(friend);
         return true;
-        
     }
 
     public boolean blockFriendData(String username, int friendId) {
-        User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendId);
-        boolean isFriend = false;
+        User user = searchUsers(username);
+        User friend = searchUsers(friendId);
 
-        if (user == null || friend == null)
+        if (user == null || friend == null || !user.getFriends().contains(friend) || user.getBlockList().contains(friend)) {
             return false;
-
-        for (int i = 0; i < user.getFriends().size(); i++) {
-            if (user.getFriends().get(i).equals(friend)) {
-                isFriend = true;
-                break;
-            }
-        }
-        if (!isFriend)
-            return false;
-        for (int i = 0; i < user.getBlockList().size(); i++) {
-            if (user.getBlockList().get(i).equals(friend)) {
-                return false;
-            }
         }
 
         user.blockUser(friend);
         return true;
-
     }
 
     public boolean unblockFriendData(String username, String friendName) {
-        User user = this.searchUsers(username);
-        User friend = this.searchUsers(friendName);
+        User user = searchUsers(username);
+        User friend = searchUsers(friendName);
 
-        if (user == null || friend == null)
+        if (user == null || friend == null || !user.getFriends().contains(friend) || !user.getBlockList().contains(friend)) {
             return false;
+        }
 
-        boolean isFriend = false;
-        boolean isBlocked = false;
-        for (int i = 0; i < user.getFriends().size(); i++) {
-            if (user.getFriends().get(i).equals(friend)) {
-                isFriend = true;
-                break;
-            }
-        }
-        if (!isFriend)
-            return false;
-        for (int i = 0; i < user.getBlockList().size(); i++) {
-            if (user.getBlockList().get(i).equals(friend)) {
-                isBlocked = true;
-            }
-        }
-        if (!isBlocked)
-            return false;
         user.unblockUser(friend);
         return true;
-
     }
-
-    // public boolean readProfileFile() throws IOException {
-    //     try {
-    //         File f = new File(profileFile);
-    //         BufferedReader br = new BufferedReader(new FileReader(f));
-    //         while (true) {
-    //             String line = br.readLine();
-    //             if (line == null)
-    //                 break;
-                
-    //         }
-    //         br.close();
-    //         return true;
-    //     } catch (IOException e) {
-    //         return false;
-    //     }
-    //  }
 
     public boolean writeOutput() {
-        try {
-            //Writer for user
-            File u = new File(userFile);
-            BufferedWriter bwU = new BufferedWriter(new FileWriter(u));
-        
-            // go through entire user arraylist and print each user to a new line
+        try (BufferedWriter bwU = new BufferedWriter(new FileWriter(userFile));
+             BufferedWriter bwC = new BufferedWriter(new FileWriter(conversationFile))) {
+
             for (int i = 0; i < users.size(); i++) {
-                if (i == users.size() - 1)
-                    bwU.write(users.get(i).toString());
-                else {
-                    bwU.write(users.get(i).toString());
-                    bwU.newLine();
-                }
-
+                bwU.write(users.get(i).toString());
+                if (i < users.size() - 1) bwU.newLine();
             }
 
-            bwU.close();
-            
-
-            //Writer for conversation
-            File c = new File(conversationFile);
-            BufferedWriter bwC = new BufferedWriter(new FileWriter(c));
-
-            // go through entire user arraylist and print each user to a new line
             for (int j = 0; j < conversations.size(); j++) {
-                if (j == conversations.size() - 1)
-                    bwC.write(conversations.get(j).toString());
-                else {
-                    bwC.write(conversations.get(j).toString());
-                    bwC.newLine();
-                }
-
+                bwC.write(conversations.get(j).toString());
+                if (j < conversations.size() - 1) bwC.newLine();
             }
-            bwC.close();
+
             return true;
         } catch (IOException e) {
-            return false;
-        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        
     }
-    
-
-    // public static void main(String[] args) {
-
-    // }
 }
-
