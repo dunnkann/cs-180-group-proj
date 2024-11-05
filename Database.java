@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Database {
+public class Database implements DatabaseInterface {
     private ArrayList<User> users;
     private ArrayList<Conversation> conversations;
     // private ArrayList<UserProfile> profiles;  // Uncomment if UserProfile class is implemented
