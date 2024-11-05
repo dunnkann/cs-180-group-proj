@@ -322,4 +322,99 @@ public class UserTest {
     }
 }
 
+ public class MessageTest {
+    
+    // Test the creation of a Message object
+    @Test
+    public void testMessageCreation() {
+        // Create User objects
+        User sender = new User("Alice", 1);
+        User receiver = new User("Bob", 2);
+        String messageText = "Hello, Bob!";
+        
+        // Create Message object
+        Message message = new Message(sender, receiver, messageText);
+        
+        // Check if the sender, receiver, and text are correct
+        assertEquals("Sender should be Alice", sender, message.getSender());
+        assertEquals("Receiver should be Bob", receiver, message.getReceiver());
+        assertEquals("Message text should match", messageText, message.getText());
+    }
+    
+    // Test the printMessage method
+    @Test
+    public void testPrintMessage() {
+        User sender = new User("Alice", 1);
+        User receiver = new User("Bob", 2);
+        String messageText = "Hello, Bob!";
+        
+        Message message = new Message(sender, receiver, messageText);
+        
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        message.printMessage();
+        System.setOut(System.out);
+        String expectedOutput = "Alice (ID: 1): Hello, Bob!";
+        
+        assertEquals("Output should match expected message format", expectedOutput, outputStream.toString().trim());
+    }
+}
+
+    public class ConversationTest {
+    
+    // Test the creation of a Conversation object
+    @Test
+    public void testConversationCreation() {
+        // Create a conversation string with user names and IDs
+        String conversationString = "Alice:1, Bob:2";
+        
+        // Create a Conversation object
+        Conversation conversation = new Conversation(conversationString);
+        
+        // Check that user1 and user2 are created correctly
+        assertEquals("User1's name should be Alice", "Alice", conversation.getUser1().getName());
+        assertEquals("User1's ID should be 1", 1, conversation.getUser1().getUserId());
+        assertEquals("User2's name should be Bob", "Bob", conversation.getUser2().getName());
+        assertEquals("User2's ID should be 2", 2, conversation.getUser2().getUserId());
+        
+        // Check that the messages list is empty at creation
+        assertTrue("Messages list should be empty", conversation.getMessages().isEmpty());
+    }
+
+    // Test adding messages to the conversation
+    @Test
+    public void testAddMessage() {
+        String conversationString = "Alice:1, Bob:2";
+        Conversation conversation = new Conversation(conversationString);
+        
+        // Add a message from Alice to Bob
+        conversation.addMessage(conversation.getUser1(), "Hello, Bob!");
+        
+        // Check that the message was added
+        ArrayList<Message> messages = conversation.getMessages();
+        assertEquals("There should be 1 message in the conversation", 1, messages.size());
+        assertEquals("Message text should match", "Hello, Bob!", messages.get(0).getText());
+        assertEquals("Sender should be Alice", "Alice", messages.get(0).getSender().getName());
+        assertEquals("Receiver should be Bob", "Bob", messages.get(0).getReceiver().getName());
+    }
+
+    // Test the string representation of the conversation
+    @Test
+    public void testMakeString() {
+        String conversationString = "Alice:1, Bob:2";
+        Conversation conversation = new Conversation(conversationString);
+        
+        conversation.addMessage(conversation.getUser1(), "Hello, Bob!");
+        conversation.addMessage(conversation.getUser2(), "Hi, Alice!");
+        
+        String expectedOutput = "Alice (ID: 1), Bob (ID: 2)\n"
+                              + "Alice (ID: 1): Hello, Bob!\n"
+                              + "Bob (ID: 2): Hi, Alice!\n";
+
+       
+        assertEquals("String representation should match", expectedOutput, conversation.makeString());
+    }
+}
+
 }
