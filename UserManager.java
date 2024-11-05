@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UserManager {
+public class UserManager implements UserManagerInterface {
     private static final String USER_DATA_FILE = "users.txt"; // Store user data
     private AtomicInteger userIdCounter;
 
