@@ -3,7 +3,7 @@ import java.util.Scanner;
 import javax.swing.*;
 
 
-public class UserSearch {
+public class UserSearch implements UserSearchInterface {
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
         String search;
