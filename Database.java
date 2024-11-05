@@ -4,14 +4,17 @@ import java.io.*;
 public class Database {
     private ArrayList<User> users;
     private ArrayList<Conversation> conversations;
+    // private ArrayList<UserProfile> profiles;  // Uncomment if UserProfile class is implemented
     private String userFile;
     private String conversationFile;
+    // private String profileFile;  // Uncomment if profile data is required
 
     public Database(String users, String conversations) {
         this.userFile = users;
         this.conversationFile = conversations;
         this.users = new ArrayList<>();
         this.conversations = new ArrayList<>();
+        // this.profiles = new ArrayList<>();  // Uncomment to initialize profiles list
     }
 
     public boolean readUserFile() {
@@ -41,6 +44,23 @@ public class Database {
             return false;
         }
     }
+
+    // Uncomment this method if profile file reading is required
+    /*
+    public boolean readProfileFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(profileFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                UserProfile profile = new UserProfile(line);
+                profiles.add(profile);
+            }
+            return !profiles.isEmpty();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    */
 
     public User searchUsers(String username) {
         for (User user : users) {
