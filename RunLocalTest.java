@@ -10,12 +10,17 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 /**
- * A framework to run public test cases for Phase 1.
+ * Test cases for all the class tests.
  *
- * 
+ * These unit tests were designed to validate the functionality of all classes used in this project.
  *
- * @author Duncan,Marveon,Kiefer,Victor
- * @version Nov 4, 2024
+ * This code was created by ChatGpt on 11/4/2024.
+ *
+ * Based on general best practices for unit testing with JUnit and Mockito.
+ * - JUnit 5 Documentation: https://junit.org/junit5/
+ * - Mockito Documentation: https://site.mockito.org/
+ *
+ * Test scenarios follow standard conventions for mocking dependencies, testing I/O operations, and ensuring proper functionality of methods.
  */
 public class RunLocalTest {
     public class TestCase {
