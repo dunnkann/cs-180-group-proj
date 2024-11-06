@@ -32,6 +32,16 @@ import java.lang.reflect.Modifier;
  * Test scenarios follow standard conventions for mocking dependencies, testing I/O operations, and ensuring proper functionality of methods.
  */
 public class RunLocalTest {
+    public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(DatabaseTest.class, UserTest.class);
+        if (result.wasSuccessful()) {
+            System.out.println("Excellent - Test ran successfully");
+        } else {
+            for (Failure failure : result.getFailures()) {
+                System.out.println(failure.toString());
+            }
+        }
+    }
     public class TestCase {
       
     }
