@@ -31,6 +31,6 @@ public class Message {
 
     // Method to display the message
     public void printMessage() {
-        System.out.println(sender.getName() + " (ID: " + sender.getUserId() + "): " + text);
+        System.out.println(sender.getUsername() + " (ID: " + sender.getUserId() + "): " + text);
     }
 }
