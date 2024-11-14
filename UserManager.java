@@ -22,7 +22,10 @@ public class UserManager implements UserManagerInterface {
             System.out.println("Username already exists.");
             return false;
         }
-
+        if (usernameHasForbiddenCharacter(username) || usernameHasForbiddenCharacter(password)) {
+            System.out.println("Username or password cannot have a comma or colon");
+            return false;
+        } 
         User newUser = new User(username, password, userIdCounter.get()); // Retrieve integer value from AtomicInteger
         userIdCounter.incrementAndGet(); // Increment userId after creating the user
 
@@ -35,8 +38,13 @@ public class UserManager implements UserManagerInterface {
             return false;
         }
     }
-
-    private boolean usernameExists(String username) throws IOException {
+    public boolean usernameHasForbiddenCharacter(String username) {
+        if (username.contains(",") || username.contains(":")) {
+            return false;
+        }
+        return true;
+    }
+    public boolean usernameExists(String username) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
