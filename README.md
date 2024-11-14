@@ -1,5 +1,5 @@
 # cs-180-group-proj
-Phase 1 Submission --> Marveon 
+Phase 1 Submission --> Keifer 
 
 Conversation.java:
 Conversate class serves to format messages betwwen users
