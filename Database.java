@@ -84,7 +84,7 @@ public class Database implements DatabaseInterface {
         User user = searchUsers(username);
         User friend = searchUsers(friendId);
 
-        if (user == null || friend == null || !user.getFriends().contains(friend)) {
+        if (user == null || friend == null || !user.getFriendList().contains(friend)) {
             return false;
         }
 
@@ -96,7 +96,7 @@ public class Database implements DatabaseInterface {
         User user = searchUsers(username);
         User friend = searchUsers(friendId);
 
-        if (user == null || friend == null || user.getFriends().contains(friend)) {
+        if (user == null || friend == null || user.getFriendList().contains(friend)) {
             return false;
         }
 
@@ -108,7 +108,7 @@ public class Database implements DatabaseInterface {
         User user = searchUsers(username);
         User friend = searchUsers(friendId);
 
-        if (user == null || friend == null || !user.getFriends().contains(friend) || user.getBlockList().contains(friend)) {
+        if (user == null || friend == null || !user.getFriendList().contains(friend) || user.getBlockList().contains(friend)) {
             return false;
         }
 
@@ -120,7 +120,7 @@ public class Database implements DatabaseInterface {
         User user = searchUsers(username);
         User friend = searchUsers(friendName);
 
-        if (user == null || friend == null || !user.getFriends().contains(friend) || !user.getBlockList().contains(friend)) {
+        if (user == null || friend == null || !user.getFriendList().contains(friend) || !user.getBlockList().contains(friend)) {
             return false;
         }
 
