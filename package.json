@@ -1,0 +1,17 @@
+{
+  "name": "cs-180-group-proj-2024-dvmk",
+  "version": "1.0.0",
+  "description": "Phase 1 Submission --> Keifer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  }
+}
