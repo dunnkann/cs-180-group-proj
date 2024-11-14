@@ -17,9 +17,10 @@ public class UserSearch {
     }
     public static String Check(String search) {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/users"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
             String newLine;
             while ((newLine = reader.readLine()) != null) {
+                // This code reads each item making sure that the username exists
                 String[] usernames = newLine.split(",");
                 for (String name : usernames) {
                     if (name.trim().equals(search)){
