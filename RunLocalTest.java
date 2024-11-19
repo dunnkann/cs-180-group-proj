@@ -427,4 +427,49 @@ public class UserTest {
     }
 }
 
+
+//PHASE 2 TESTING (Sorry for the scrolling)
+
+public class TestConversation {
+    @Test
+    public static void main(String[] args) {
+        // SUCCESS TEST CASE
+        try {
+            // Creating a Conversation with valid user data
+            String conversationString = "Alice:1, Bob:2";
+            Conversation conversation = new Conversation(conversationString);
+
+            // Adding messages to the conversation
+            User alice = new User("Alice", 1);
+            User bob = new User("Bob", 2);
+
+            conversation.addMessage(alice, "Hello, Bob!");
+            conversation.addMessage(bob, "Hi Alice, how are you?");
+
+            // Printing all messages
+            System.out.println("Success Test Case:");
+            System.out.println(conversation.makeString());
+        } catch (Exception e) {
+            System.out.println("An error occurred in the success test case: " + e.getMessage());
+        }
+
+        // FAILURE TEST CASE
+        try {
+            // Creating a Conversation with invalid user data
+            // (e.g., malformed string that does not contain the required structure)
+            String invalidConversationString = "Alice:abc, Bob:2";
+            Conversation invalidConversation = new Conversation(invalidConversationString);
+
+            // This line should not be reached if the constructor throws an exception
+            System.out.println("Failure Test Case: Constructor did not fail as expected.");
+        } catch (Exception e) {
+            // Expecting an exception due to the malformed user ID
+            System.out.println("Failure Test Case: Caught expected exception - " + e.getMessage());
+        }
+    }
+}
+
+
+
+
 }
