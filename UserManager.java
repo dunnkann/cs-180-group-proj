@@ -1,12 +1,18 @@
 import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.net.*;
 
-public class UserManager implements UserManagerInterface {
+public class UserManager implements UserManagerInterface, Runnable {
     private static final String USER_DATA_FILE = "users.txt"; // Store user data
     private AtomicInteger userIdCounter;
+    private Socket clientSocket;
+    private BufferedReader reader;
+    private PrintWriter writer;
+    private String message;
 
-    public UserManager() {
+    public UserManager(Socket client) {
         try {
+            this.clientSocket = client;
             // Create the users.txt file if it does not exist
             new File(USER_DATA_FILE).createNewFile();
             
@@ -16,7 +22,28 @@ public class UserManager implements UserManagerInterface {
             e.printStackTrace();
         }
     }
+    public void run() {
+        try {
+            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            writer = new PrintWriter(clientSocket.getOutputStream());
 
+            while((message = reader.readLine()) != null) {
+                if (message.equals("Register")) {
+                    boolean good = this.registerUser(reader.readLine(), reader.readLine());
+                    writer.write(Boolean.toString(good));
+                    writer.println();
+                    writer.flush();
+                } else if (message.equals("Login")) {
+                    boolean good = this.loginUser(reader.readLine(), reader.readLine());
+                    writer.write(Boolean.toString(good));
+                    writer.println();
+                    writer.flush();
+                }
+            }
+        } catch(IOException e) {
+
+        }
+    }
     public boolean registerUser(String username, String password) throws IOException {
         if (usernameExists(username)) {
             System.out.println("Username already exists.");
@@ -40,9 +67,9 @@ public class UserManager implements UserManagerInterface {
     }
     public boolean usernameHasForbiddenCharacter(String username) {
         if (username.contains(",") || username.contains(":")) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     public boolean usernameExists(String username) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_FILE))) {
@@ -78,7 +105,9 @@ public class UserManager implements UserManagerInterface {
         }
         return false; // Invalid credentials
     }
-
+    public int getTotalUsers() {
+        return 1;
+    }
     private int getHighestUserId() throws IOException {
         int maxId = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_DATA_FILE))) {

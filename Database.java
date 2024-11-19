@@ -36,9 +36,9 @@ public class Database implements DatabaseInterface {
         for (int i = 0; i < users.size(); i++) {
             
             User current = users.get(i);
-            List<User> friends = current.getFriends();
+            List<User> friends = current.getFriendList();
             //look through the current user's friend list, find each friend, initialize them properly, or increase notFound
-            for (int j = 0; j < current.getFriends().size(); j++) {
+            for (int j = 0; j < current.getFriendList().size(); j++) {
                 int friendId = friends.get(i).getUserId();
                 User friend = this.searchUsers(friendId);
                 if (friend == null)
@@ -180,15 +180,13 @@ public class Database implements DatabaseInterface {
                 bwU.write(users.get(i).toString());
                 if (i < users.size() - 1) bwU.newLine();
             }
+                bwU.close();
 
-            }
-
-            bwU.close();
+            
             
 
             //Writer for conversation
             File c = new File(conversationFile);
-            BufferedWriter bwC = new BufferedWriter(new FileWriter(c));
 
             // go through entire conversation arraylist and print each conversation to a new line
             for (int j = 0; j < conversations.size(); j++) {
@@ -196,11 +194,11 @@ public class Database implements DatabaseInterface {
                 if (j < conversations.size() - 1) bwC.newLine();
             }
 
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
     }
     
 ///////
