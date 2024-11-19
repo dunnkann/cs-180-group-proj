@@ -2,8 +2,8 @@ import java.util.*;
 import java.io.*;
 
 public class Database implements DatabaseInterface {
-    private ArrayList<User> users;
-    private ArrayList<Conversation> conversations;
+    private List<User> users = Collections.synchronizedList(new ArrayList<>());
+    private List<Conversation> conversations = Collections.synchronizedList(new ArrayList<>());
     // private ArrayList<UserProfile> profiles;  // Uncomment if UserProfile class is implemented
     private String userFile;
     private String conversationFile;
@@ -29,6 +29,50 @@ public class Database implements DatabaseInterface {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean assignFriends() {
+        boolean fail = false;
+        for (int i = 0; i < users.size(); i++) {
+            
+            User current = users.get(i);
+            List<User> friends = current.getFriendList();
+            //look through the current user's friend list, find each friend, initialize them properly, or increase notFound
+            for (int j = 0; j < current.getFriendList().size(); j++) {
+                int friendId = friends.get(i).getUserId();
+                User friend = this.searchUsers(friendId);
+                if (friend == null)
+                    fail = true;
+                else
+                    friends.set(i, friend);
+            }
+        }
+        if (fail)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean assignBlocked() {
+        boolean fail = false;
+        for (int i = 0; i < users.size(); i++) {
+            
+            User current = users.get(i);
+            List<User> blockedList = current.getBlockList();
+            //look through the current user's friend list, find each friend, initialize them properly, or increase notFound
+            for (int j = 0; j < blockedList.size(); j++) {
+                int blockedId = blockedList.get(i).getUserId();
+                User blocked = this.searchUsers(blockedId);
+                if (blocked == null)
+                    fail = true;
+                else
+                    blockedList.set(i, blocked);
+            }
+        }
+        if (fail)
+            return false;
+        else
+            return true;
     }
 
     public boolean readConversationFile() {
@@ -136,16 +180,29 @@ public class Database implements DatabaseInterface {
                 bwU.write(users.get(i).toString());
                 if (i < users.size() - 1) bwU.newLine();
             }
+                bwU.close();
 
+            
+            
+
+            //Writer for conversation
+            File c = new File(conversationFile);
+
+            // go through entire conversation arraylist and print each conversation to a new line
             for (int j = 0; j < conversations.size(); j++) {
                 bwC.write(conversations.get(j).toString());
                 if (j < conversations.size() - 1) bwC.newLine();
             }
 
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
     }
+    
+///////
+    // public static void main(String[] args) {
+
+    // }
 }

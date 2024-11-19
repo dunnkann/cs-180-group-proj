@@ -20,7 +20,7 @@ public class User implements UserActions {
         if (mainAttributes.length < 5) {
             throw new IllegalArgumentException("Expected format: Username: <username>, Password: <password>, UserID: <userId>, Description: <description>, FriendsOnly: <friendsOnly>");
         }
-    
+
         this.username = mainAttributes[0].split(": ")[1].trim();
         this.password = mainAttributes[1].split(": ")[1].trim();
         this.userId = Integer.parseInt(mainAttributes[2].split(": ")[1].trim());
@@ -256,5 +256,9 @@ public class User implements UserActions {
     public void setConversations(List<Conversation> conversations) {
         this.conversations = Collections.synchronizedList(new ArrayList<>(conversations));
     }
+
+    // public static void main(String[] args) {
+    //     User user = new User("Username: Kiefer, Password: 1234, UserID: 1, Description: '', FriendsOnly: false; Friends: []; Blocked Users: []; Conversations: []");
+    // }
 
 }

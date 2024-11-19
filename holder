@@ -1,0 +1,181 @@
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;
+import java.io.*;
+
+class DatabaseTest {
+
+    private Database db;
+    private User user1, user2;
+    
+    @BeforeEach
+    void setUp() {
+        db = new Database("users.txt", "conversations.txt");
+        user1 = mock(User.class);
+        user2 = mock(User.class);
+    }
+
+    @Test
+    void testReadUserFile_Success() throws IOException {
+        // Simulate reading a file
+        File file = mock(File.class);
+        BufferedReader reader = mock(BufferedReader.class);
+        when(reader.readLine()).thenReturn("user1", "user2", null);  // simulate two users in the file
+
+        db.readUserFile();
+        
+        // Verify if the users are added to the database
+        Assertions.assertTrue(db.getUsers().contains(user1));
+        Assertions.assertTrue(db.getUsers().contains(user2));
+    }
+    
+    @Test
+    void testReadUserFile_Failure() throws IOException {
+        File file = mock(File.class);
+        BufferedReader reader = mock(BufferedReader.class);
+        when(reader.readLine()).thenThrow(new IOException("File not found"));
+
+        boolean result = db.readUserFile();
+        
+        // Assert false if the method catches the exception
+        Assertions.assertFalse(result);
+    }
+
+        @Test
+    void testAddFriendData_Success() {
+        // Mock User objects
+        User user = mock(User.class);
+        User friend = mock(User.class);
+        
+        when(db.searchUsers("user1")).thenReturn(user);
+        when(db.searchUsers(2)).thenReturn(friend);
+        
+        // Simulate adding the friend
+        when(user.getFriends()).thenReturn(new ArrayList<>());
+        
+        boolean result = db.addFriendData("user1", 2);
+        
+        // Assert true because the friend should be added
+        Assertions.assertTrue(result);
+    }
+        
+    @Test
+    void testAddFriendData_UserNotFound() {
+        when(db.searchUsers("user1")).thenReturn(null);
+        
+        boolean result = db.addFriendData("user1", 2);
+        
+        Assertions.assertFalse(result); // False because user1 does not exist
+    }
+
+    @Test
+void testRemoveFriendData_Success() {
+    User user = mock(User.class);
+    User friend = mock(User.class);
+
+    when(db.searchUsers("user1")).thenReturn(user);
+    when(db.searchUsers(2)).thenReturn(friend);
+    when(user.getFriends()).thenReturn(new ArrayList<>(List.of(friend)));
+    
+    // Simulate removing a friend
+    boolean result = db.removeFriendData("user1", 2);
+
+    Assertions.assertTrue(result); // Assert the friend was removed
+    }
+
+    @Test
+    void testRemoveFriendData_FriendNotFound() {
+        User user = mock(User.class);
+        when(db.searchUsers("user1")).thenReturn(user);
+        when(db.searchUsers(2)).thenReturn(null);
+        
+        boolean result = db.removeFriendData("user1", 2);
+        
+        Assertions.assertFalse(result); // Assert failure because friend does not exist
+    }
+    @Test
+    void testBlockFriendData_Success() {
+        User user = mock(User.class);
+        User friend = mock(User.class);
+        
+        when(db.searchUsers("user1")).thenReturn(user);
+        when(db.searchUsers(2)).thenReturn(friend);
+        
+        when(user.getFriends()).thenReturn(new ArrayList<>(List.of(friend)));
+        when(user.getBlockList()).thenReturn(new ArrayList<>());
+        
+        boolean result = db.blockFriendData("user1", 2);
+        
+        Assertions.assertTrue(result); // Assert the user was blocked
+    }
+        
+    @Test
+    void testBlockFriendData_NotAFriend() {
+        User user = mock(User.class);
+        User friend = mock(User.class);
+        
+        when(db.searchUsers("user1")).thenReturn(user);
+        when(db.searchUsers(2)).thenReturn(friend);
+        
+        when(user.getFriends()).thenReturn(new ArrayList<>());  // Not a friend
+        
+        boolean result = db.blockFriendData("user1", 2);
+        
+        Assertions.assertFalse(result); // Assert false because they aren't friends
+    }
+    
+    @Test
+    void testWriteOutput_Success() throws IOException {
+        // Setup mock file writer
+        File userFile = mock(File.class);
+        File conversationFile = mock(File.class);
+        BufferedWriter writer = mock(BufferedWriter.class);
+        
+        when(writer.write(anyString())).thenReturn(null);
+        when(writer.newLine()).thenReturn(null);
+        
+        boolean result = db.writeOutput();  // Assuming we have data added to db
+        
+        Assertions.assertTrue(result); // If no exception is thrown, the result is true
+    }
+    
+    @Test
+    void testWriteOutput_Failure() throws IOException {
+        // Setup a failing case (e.g., file not found)
+        when(db.writeOutput()).thenThrow(new IOException("Unable to write to file"));
+        
+        boolean result = db.writeOutput();
+        
+        Assertions.assertFalse(result); // If an exception is thrown, the result is false
+    }
+    
+    @Test
+    void testAssignFriends_Success() {
+        User user = mock(User.class);
+        User friend = mock(User.class);
+        
+        when(db.searchUsers(2)).thenReturn(friend);
+        when(user.getFriends()).thenReturn(new ArrayList<>(List.of(friend)));
+        
+        boolean result = db.assignFriends();
+        
+        Assertions.assertTrue(result); // Assert that friends were assigned
+    }
+    
+    @Test
+    void testAssignFriends_Failure() {
+        User user = mock(User.class);
+        
+        when(user.getFriends()).thenReturn(new ArrayList<>());
+        
+        boolean result = db.assignFriends();
+        
+        Assertions.assertFalse(result); // Assert that failure occurs when no friends found
+    }
+
+}

@@ -5,9 +5,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,6 +15,10 @@ import static org.mockito.Mockito.*;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
 /**
  * Test cases for all the class tests.
  *
@@ -41,9 +42,6 @@ public class RunLocalTest {
                 System.out.println(failure.toString());
             }
         }
-    }
-    public class TestCase {
-      
     }
     import static org.junit.jupiter.api.Assertions.*;
 
