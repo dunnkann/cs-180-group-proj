@@ -6,7 +6,7 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Main implements Runnable {
+public class Main implements Runnable, MainInterface {
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
