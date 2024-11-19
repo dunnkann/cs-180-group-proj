@@ -1,4 +1,4 @@
-public interface UserManagementSystem {
+public interface MainInterface {
     
     // Method to establish a socket connection to the server
     void connect(String host, int port) throws IOException;
