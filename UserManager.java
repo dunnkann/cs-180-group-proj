@@ -12,6 +12,7 @@ public class UserManager implements UserManagerInterface, Runnable {
     private String message;
     private User user; // user this thread is interacting with
     private List<User> users = Collections.synchronizedList(new ArrayList<>());
+    public static Object o;
 
     public UserManager(Socket client) {
         try {
@@ -45,6 +46,7 @@ public class UserManager implements UserManagerInterface, Runnable {
             writer = new PrintWriter(clientSocket.getOutputStream());
 
             while((message = reader.readLine()) != null) {
+                System.out.println(message);
                 if (message.equals("Register")) {
                     boolean good = this.registerUser(reader.readLine(), reader.readLine());
                     writer.write(Boolean.toString(good));
@@ -71,6 +73,7 @@ public class UserManager implements UserManagerInterface, Runnable {
                     List<String> options = new ArrayList<String>();
                     boolean found = false;
                     options.add("Message");
+                    System.out.println(selectedUser); // testing if correct user selected
                     for (User user: friends) {
                         
                         if (user.getUsername().equals(selectedUser)) {
@@ -107,8 +110,46 @@ public class UserManager implements UserManagerInterface, Runnable {
                     }
 
 
+                } else if (message.equals("Friend")) {
+                    String userFriending = reader.readLine();
+                    for (User profile : users) {
+                        if (profile.getUsername().equals(userFriending)) {
+                            profile.addFriend(user);
+                            this.user.addFriend(profile);
+                            break;
+                        }
+                    }
+                } else if (message.equals("Unfriend")) {
+                    String userFriending = reader.readLine();
+                    for (User profile : users) {
+                        if (profile.getUsername().equals(userFriending)) {
+                            profile.removeFriend(user);
+                            this.user.removeFriend(profile);
+                            this.user.unblockUser(profile);
+                            break;
+                        }
+                    }
+                } else if (message.equals("Block")) {
+                    String userFriending = reader.readLine();
+                    for (User profile : users) {
+                        if (profile.getUsername().equals(userFriending)) {
+                            user.blockUser(profile);
+                            break;
+                        }
+                    }
+                } else if (message.equals("Unblock")) {
+                    String userFriending = reader.readLine();
+                    for (User profile : users) {
+                        if (profile.getUsername().equals(userFriending)) {
+                            user.unblockUser(profile);
+                            break;
+                        }
+                    }
                 }
+                System.out.println("done");
+                this.writeToFile();
             }
+            System.out.println("It quit");
         } catch(IOException e) {
 
         }
@@ -166,7 +207,10 @@ public class UserManager implements UserManagerInterface, Runnable {
                 String storedPassword = parts[1].split(":")[1].trim();
 
                 if (storedUsername.equals(username) && storedPassword.equals(password)) {
-                    this.user = new User(line);
+                    User holder = new User(line);
+                    int index = users.indexOf(holder);
+                    this.user = users.get(index);
+                    System.out.println(this.user);
                     return true; // Login successful
                     
                 }
@@ -208,5 +252,17 @@ public class UserManager implements UserManagerInterface, Runnable {
             }
         }
         return users;
+    }
+
+    public synchronized void writeToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_FILE, false))) {
+            // newUser.getUsername() + "," + newUser.getPassword() + "," + newUser.getUserId()
+            for (User user : users) {
+                writer.write(user.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing user data: " + e.getMessage());
+        }
     }
 }

@@ -24,7 +24,7 @@ public class User implements UserActions {
         this.username = mainAttributes[0].split(": ")[1].trim();
         this.password = mainAttributes[1].split(": ")[1].trim();
         this.userId = Integer.parseInt(mainAttributes[2].split(": ")[1].trim());
-        this.description = mainAttributes[3].split(": ")[1].trim();
+        this.description = mainAttributes[3].split(":")[1].trim();
         this.friendsOnly = Boolean.parseBoolean(mainAttributes[4].split(": ")[1].trim());
     
         // Initialize friend and block lists

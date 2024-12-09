@@ -61,6 +61,11 @@ public class Main implements Runnable, MainInterface {
                 options[i] = reader.readLine();
             }
             String option = (String) JOptionPane.showInputDialog(null, selectedUser, "Options", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            writer.write(option);
+            writer.println();
+            writer.write(selectedUser);
+            writer.println();
+            writer.flush();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "IOError", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -71,7 +76,7 @@ public class Main implements Runnable, MainInterface {
         int choice;
         String password;
         String username;
-        JOptionPane.showMessageDialog(null, "Welcome to the User Management System!", "Welcome", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Welcome to FriendZone!", "Welcome", JOptionPane.INFORMATION_MESSAGE);
         //System.out.println("Welcome to the User Management System!");
         try {
         socket = new Socket("localhost", 4242);// set up socket
