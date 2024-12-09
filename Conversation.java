@@ -43,11 +43,11 @@ public class Conversation {
     // Makes the conversation into a string
     public String makeString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(user1.getName()).append(" (ID: ").append(user1.getUserId()).append("), ")
-          .append(user2.getName()).append(" (ID: ").append(user2.getUserId()).append(")\n");
+        sb.append(user1.getUsername()).append(" (ID: ").append(user1.getUserId()).append("), ")
+          .append(user2.getUsername()).append(" (ID: ").append(user2.getUserId()).append(")\n");
 
         for (Message message : messages) {
-            sb.append(message.getSender().getName())
+            sb.append(message.getSender().getUsername())
               .append(" (ID: ").append(message.getSender().getUserId()).append("): ")
               .append(message.getText()).append("\n");
         }
