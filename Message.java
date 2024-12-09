@@ -7,6 +7,7 @@ public class Message {
     private User receiver;
     private String text;
 
+
     
     public Message(User sender, User receiver, String text) {
         this.sender = sender;
@@ -31,6 +32,6 @@ public class Message {
 
     // Method to display the message
     public void printMessage() {
-        System.out.println(sender.getName() + " (ID: " + sender.getUserId() + "): " + text);
+        System.out.println(sender.getName() + ":" + text);
     }
 }
